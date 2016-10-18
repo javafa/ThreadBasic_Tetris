@@ -1,22 +1,33 @@
 package com.kodonho.android.threadbasic_tetris;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
 public class MainActivity extends AppCompatActivity {
-
     FrameLayout ground;
     Button btnUp,btnDown,btnLeft,btnRight;
 
-    int stageLevel =  1;
+    int deviceWidth = 0;
+    int deviceHeight = 0;
 
+    int block_pixel_unit = 0;
+    private static final int WIDTH_MAX_COUNT = 23;
 
-    Stage stage = new Stage();
-    Block block = new Block();
-    MainStage mainStage;
-
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case Stage.REFRESH:
+                    // 화면갱신을 Stage에 요청한다
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,17 +41,14 @@ public class MainActivity extends AppCompatActivity {
         btnLeft = (Button) findViewById(R.id.btnLeft);
         btnRight = (Button) findViewById(R.id.btnRight);
 
-        // stageMap 배열에 Stage 객체에 정의된 배열값을 세팅한다
-        setStage(1);
-        // 뷰 객체를 생성한다
-        mainStage = new MainStage(this, stage, block);
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        deviceWidth = metrics.widthPixels;
+        deviceHeight = metrics.heightPixels;
+
+        block_pixel_unit = deviceWidth / WIDTH_MAX_COUNT;
+
+        Stage stage = new Stage(this, handler, block_pixel_unit);
+        ground.addView(stage);
     }
-
-    public void setStage(int stageLevel){
-        stage.setStage(stageLevel);
-        block.setBlock();
-    }
-
-
 
 }
