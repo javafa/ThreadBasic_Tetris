@@ -11,6 +11,9 @@ import android.view.View;
  * Created by fastcampus on 2016-10-17.
  */
 public class Stage extends View {
+
+    public static boolean running = true;
+
     public static final int REFRESH = 0;
     public static final int NEW_BLOCK = 1;
     public static int interval = 500;
@@ -33,12 +36,15 @@ public class Stage extends View {
     // 현재 화면에 그려지는 스테이지
     static int stageMap[][] = null;
     //스테이지에서 현재 움직이고 있는 블럭
-    Block blockGroup = null;
+    static Block blockGroup = null;
 
     public void setBlock(){
         // 생성자에서 호출된다
-        blockGroup = BlockFactory.newBlock(mainHandler);
-        blockGroup.start();
+        Log.i("setBlock() in Stage","============================================called setBlock!!!");
+        if(running){
+            blockGroup = BlockFactory.newBlock(mainHandler);
+            blockGroup.start();
+        }
     }
 
     // 스테이지를 갱신한다
@@ -83,7 +89,6 @@ public class Stage extends View {
         Log.i("DrawBlock","============================================");
         for(int i=0;i<blockGroup.width;i++){
             for(int j=0;j<blockGroup.height;j++){
-                Log.i("DrawBlock","x="+i+", y="+j+", cBlock[j][i]="+cBlock[j][i]);
                 if(cBlock[j][i] > 0) {  // 블럭에 입력된 값이 0보다 클 경우만 그려준다
                     canvas.drawRect(
                               (stageLeft + blockGroup.x + i) * unit
@@ -175,14 +180,12 @@ public class Stage extends View {
     }
 
     public void downBlock(){
-        synchronized (blockGroup) {
-            blockGroup.y++;
-            if (!blockGroup.collisionCheck()) {
-                invalidate();
-            } else {
-                blockGroup.y--;
-                blockGroup.setBlockIntoStage();
-            }
+        blockGroup.y++;
+        if (!blockGroup.collisionCheck()) {
+            invalidate();
+        } else {
+            blockGroup.y--;
+            blockGroup.setBlockIntoStage();
         }
     }
 

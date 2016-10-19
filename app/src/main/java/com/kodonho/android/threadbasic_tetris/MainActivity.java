@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         block_pixel_unit = deviceWidth / WIDTH_MAX_COUNT;
 
+        Stage.running = true;
         stage = new Stage(this, handler, block_pixel_unit);
         ground.addView(stage);
     }
@@ -79,5 +80,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 stage.rightBlock();
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Stage.running = false;
     }
 }
