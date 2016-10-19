@@ -55,7 +55,7 @@ public class Block extends Thread{
             try{
                 // 시작하자마자는 위치 변경이 없으므로 먼저 sleep을 한다
                 Thread.sleep(interval);
-                synchronized (this) {
+                if(alive) {
                     y++;
                     if (!collisionCheck()) {
                         //위치 변경후에는 다시 그리기를 요청한다
@@ -69,6 +69,9 @@ public class Block extends Thread{
                 e.printStackTrace();
             }
         }
+        try{
+            interrupt();
+        }catch (Exception e){ e.printStackTrace(); }
     }
 
     public void setBlockIntoStage(){
@@ -106,6 +109,7 @@ public class Block extends Thread{
                 }
             }
         }
+        Stage.blockGroup = null;
         handler.sendEmptyMessage(Stage.NEW_BLOCK);
     }
 
